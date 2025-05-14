@@ -1,16 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="estilo.css">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=play_circle" />
     <title>Jogo Cobrilha ta ok</title>
 
-    
+
 </head>
+
 <body>
-    <h1></h1>
+    <div class="score">
+        <span class="score--value">Score: 00</span>
+    </div>
+
+    <div class="menu-screen">
+        <span class="game-over">Game Over</span>
+        <span class="final-score">score <span>00</span></span>
+
+        <button class="btn-play">
+            <span class="material-symbols-outlined">
+                play_circle
+            </span>
+            
+            Jogar novamente
+        </button>
+    </div>
+
     <canvas height="600px" width="600px"></canvas>
     <script src="index.js"></script>
 </body>
+
 </html>
