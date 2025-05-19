@@ -1,25 +1,28 @@
 const canvas = document.querySelector("canvas")
+const ctx = canvas.getContext("2d")
+
 const score = document.querySelector(".score--value")
 const finalScore = document.querySelector(".final-score > span")
 const menu = document.querySelector(".menu-screen")
 const buttonPlay = document.querySelector(".btn-play")
 
-const ctx = canvas.getContext("2d")
-
 let h1 = document.querySelector("h1")
 
-let direcao, loopId
-
 const size = 30
-const cobra = [
-    { x: 270, y: 240 },
-    { x: 300, y: 240 },
-    { x: 330, y: 240 }  
-]
+
+const posicaoInicial =  { x: 270, y: 240 }
+
+let cobra = [posicaoInicial]
+
+const img = new Image()
+img.src = "bolsonaro.png"
+
+const img2 = new Image()
+img2.src = "comuna.png"
 
 //INCREMENTA PONTOS
 const incrementScore = () =>{
-    score.innerText = parseInt(score.innerText) + 10
+    score.innerText = parseInt(score.innerText) + 1
 }
 
 const randomNumber = (min, max) => {
@@ -47,7 +50,7 @@ const pontos = {
     color: randomColor()
 }
 
-
+let direcao, loopId
 
 //FUNÇÃO QUE CRIA COMIDA 
 const drawPontos = () => {
@@ -57,20 +60,20 @@ const drawPontos = () => {
     ctx.shadowColor = color
     ctx.shadowBlur = 50
     ctx.fillStyle = color
-    ctx.fillRect(x, y, size, size)
+    ctx.drawImage(img2, x, y, size, size)
     ctx.shadowBlur = 0
 
 }
 // FUNÇÃO QUE DESENHA A COBRA
 const drawSnake = () => {
-    ctx.fillStyle = "#ddd"
-
+    
     cobra.forEach((posicao, index) => {
-
-        if (index == cobra.length - 1) {
-            ctx.fillStyle = "white"
+        if(index === cobra.length - 1){
+            ctx.drawImage(img,posicao.x, posicao.y, size, size)
+        }else{
+            ctx.drawImage(img2,posicao.x, posicao.y, size, size)
         }
-        ctx.fillRect(posicao.x, posicao.y, size, size)
+        
     })
 }
 
@@ -119,7 +122,8 @@ const checkEat = () => {
 
     if (cabeca.x == pontos.x && cabeca.y == pontos.y) {
         incrementScore()
-        cobra.push(cabeca)
+        cobra.push({x: pontos.x, y: pontos.y})
+
         let x = randomPosition()
         let y = randomPosition()
 
@@ -134,30 +138,32 @@ const checkEat = () => {
     }
 }
 
+
 //FUNÇÃO DE COLISSÕES
 const checkCollision = () =>{
     const cabeca = cobra[cobra.length - 1]
-
     const canvasLimit = canvas.width - size
+    const neckIndex = cobra.length - 2
 
-    const neckIndex = cobra.length - 1
-
-    const wallCollision = cabeca.x < 0 || cabeca.x > 507 || cabeca.y < 0 || cabeca.y > 570
+    const wallCollision = cabeca.x < 0 || cabeca.x > canvasLimit || cabeca.y < 0 || cabeca.y > canvasLimit
 
     const selfCollision = cobra.find((posicao, index) =>{
         return index < neckIndex && posicao.x == cabeca.x && posicao.y == cabeca.y
     })
 
     if(wallCollision || selfCollision){
-        alert('Game Over')
+       gameOver()
     }
 }
 
 //FUNÇÃO DE GAME OVER
 const gameOver = () =>{
+    console.log('chama')
     direcao = undefined
+
     menu.style.display = "flex"
-    finalScore.innerText - score 
+    finalScore.innerText = score.innerText
+    canvas.style.filter = "blur(2px)" 
 }
 
 //LOOP DA COBRA 
@@ -172,14 +178,10 @@ const gameLoop = () => {
     checkEat()
     checkCollision()
     
-
     loopId = setTimeout(() => {
         gameLoop()
     }, 150)
-
-
 }
-
 
 gameLoop()
 
@@ -200,4 +202,10 @@ document.addEventListener("keydown", ({ key }) => {
 
 })
 
-
+buttonPlay.addEventListener("click", () =>{
+    score.innerText = "00"
+    menu.style.display = "none"
+    canvas.style.filter = "none"
+    
+    cobra = [posicaoInicial]
+})
